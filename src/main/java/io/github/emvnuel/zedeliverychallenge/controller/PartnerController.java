@@ -5,14 +5,9 @@ import io.github.emvnuel.zedeliverychallenge.controller.dto.PartnerRequest;
 import io.github.emvnuel.zedeliverychallenge.controller.dto.PartnerResponse;
 import io.github.emvnuel.zedeliverychallenge.model.Partner;
 import io.github.emvnuel.zedeliverychallenge.repository.PartnerRepository;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.geo.Point;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,10 +15,10 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.net.URI;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/partners")
+@Validated
 public class PartnerController {
 
     private final PartnerRepository partnerRepository;
@@ -51,10 +46,8 @@ public class PartnerController {
     @GetMapping("/search")
     public ResponseEntity<PartnerResponse> searchPartner(@RequestParam @Min(-90) @Max(90) Double lat,
                                                  @RequestParam @Min(-180) @Max(180) Double lon) {
-
-        Optional<Partner> nearestPartner = partnerRepository.findNearestPartnerWithinCoveraregeArea(lat, lon);
-
-        return nearestPartner.map(partner -> ResponseEntity.ok(new PartnerResponse(partner)))
+        return partnerRepository.findNearestPartnerWithinCoveraregeArea(lat, lon)
+                .map(partner -> ResponseEntity.ok(new PartnerResponse(partner)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
