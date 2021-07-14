@@ -46,7 +46,7 @@ public class PartnerController {
     @GetMapping("/search")
     public ResponseEntity<PartnerResponse> searchPartner(@RequestParam @Min(-90) @Max(90) Double lat,
                                                  @RequestParam @Min(-180) @Max(180) Double lon) {
-        return partnerRepository.findNearestPartnerWithinCoveraregeArea(lat, lon)
+        return partnerRepository.findNearestPartnerWithinCoverageArea(lat, lon)
                 .map(partner -> ResponseEntity.ok(new PartnerResponse(partner)))
                 .orElse(ResponseEntity.notFound().build());
     }

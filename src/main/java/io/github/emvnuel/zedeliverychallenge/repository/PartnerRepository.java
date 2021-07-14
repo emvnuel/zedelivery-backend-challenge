@@ -29,7 +29,7 @@ public class PartnerRepository {
         return Optional.ofNullable(mongoTemplate.findById(id, Partner.class));
     }
 
-    public Optional<Partner> findNearestPartnerWithinCoveraregeArea(Double lat, Double lon) {
+    public Optional<Partner> findNearestPartnerWithinCoverageArea(Double lat, Double lon) {
         Point location = new Point(lat, lon);
         return Optional.ofNullable(
                 mongoTemplate.findOne(new Query(Criteria.where("address").nearSphere(location)
